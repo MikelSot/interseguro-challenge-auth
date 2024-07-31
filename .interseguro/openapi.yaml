@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: Interseguro Challenge
+  description: Auth API for Interseguro Challenge
+  version: 1.0.0
+  x-audience: internal
+servers:
+  - url: https://reto-financiera-compartamos.onrender.com/api/v1
+paths:
+  /login:
+    post:
+      summary: Login
+      description: Login to the application
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /register:
+    post:
+      summary: Register
+      description: Register to the application
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+    schemas:
+        LoginRequest:
+        type: object
+        properties:
+            email:
+            type: string
+            password:
+            type: string
+        LoginResponse:
+        type: object
+        properties:
+            token:
+            type: string
+        RegisterRequest:
+        type: object
+        properties:
+            email:
+            type: string
+            password:
+            type: string
+        RegisterResponse:
+        type: object
+        properties:
+            message:
+            type: string
+        Error:
+        type: object
+        properties:
+            message:
+            type: string
