@@ -54,22 +54,15 @@ func getAllowMethods() string {
 	return allowedMethods
 }
 
-func getPrivateSignaturePath() string {
-	privateSignature := os.Getenv("PRIVATE_SIGNATURE")
-	if privateSignature == "" {
+func getSignKey() string {
+	signKey := os.Getenv("SIGN_KEY")
+	if signKey == "" {
+		log.Warn("sign key not found")
+
 		return ""
 	}
 
-	return privateSignature
-}
-
-func getPublicSignaturePath() string {
-	publicSignature := os.Getenv("PUBLIC_SIGNATURE")
-	if publicSignature == "" {
-		return ""
-	}
-
-	return publicSignature
+	return signKey
 }
 
 func getExpiresAtHours() int {

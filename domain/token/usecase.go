@@ -1,11 +1,10 @@
 package token
 
 import (
-	"crypto/rsa"
 	"net/http"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v4"
 
 	"github.com/MikelSot/interseguro-challenge-auth/model"
 )
@@ -13,16 +12,15 @@ import (
 type Token struct {
 	ExpiresAt int
 
-	_signKey *rsa.PrivateKey
+	SignKey string
 }
 
-func New(expiresAt int, signKey *rsa.PrivateKey) Token {
+func New(expiresAt int, signKey string) Token {
 	return Token{expiresAt, signKey}
 }
 
 func (t Token) Generate(m model.User) (string, error) {
 	payload := jwt.MapClaims{
-		"id":    m.ID,
 		"email": m.Email,
 		"ia":    time.Now().Unix(),
 		"exp":   time.Now().Add(time.Hour * time.Duration(t.ExpiresAt)).Unix(),
@@ -30,7 +28,7 @@ func (t Token) Generate(m model.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 
-	key, err := token.SignedString(t._signKey)
+	key, err := token.SignedString([]byte(t.SignKey))
 	if err != nil {
 		customError := model.NewError()
 

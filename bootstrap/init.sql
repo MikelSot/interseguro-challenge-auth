@@ -19,7 +19,7 @@ Tabla de usuarios
 -- Insertar datos de prueba
 
 INSERT INTO users ("first_name", "last_name", "email", "password")
-VALUES ('Juan', 'Pérez', 'admin@admin', '12345');
+VALUES ('Juan', 'Pérez', 'admin@admin', '$2a$10$hPbh.Z57coBKvzvzt87yCOCFFV4NmPFmtjdOmsGQNqES4jxqgRBES');
 
 
 

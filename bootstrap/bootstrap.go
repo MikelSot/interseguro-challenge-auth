@@ -21,7 +21,7 @@ func Run() {
 		Logger:    logger,
 		DB:        db,
 		ExpiresAt: getExpiresAtHours(),
-		SignKey:   signKey,
+		SignKey:   getSignKey(),
 	})
 
 	log.Fatal(app.Listen(getPort()))
