@@ -46,23 +46,24 @@ func ValidateJWT(c *fiber.Ctx) error {
 
 		return customError
 	}
-	if err != nil {
-		log.Warnf("Error al procesar el token %v", err)
-
-		fmt.Println(getSignKey())
-
-		customError.SetCode(model.UnexpectedError)
-		customError.SetAPIMessage("Error al procesar el token")
-		customError.SetStatusHTTP(http.StatusInternalServerError)
-
-		return customError
-	}
 	if !token.Valid {
 		log.Warn("Token de acceso no válido")
 
 		customError.SetCode(model.Unauthorized)
 		customError.SetAPIMessage("Token de acceso no válido")
 		customError.SetStatusHTTP(http.StatusUnauthorized)
+
+		return customError
+	}
+	if err != nil {
+		log.Errorf("Error al procesar el token: %s", err.Error())
+
+		log.Warnf(getSignKey())
+		log.Warnf(tokenHeader)
+
+		customError.SetCode(model.UnexpectedError)
+		customError.SetAPIMessage("Error al procesar el token")
+		customError.SetStatusHTTP(http.StatusInternalServerError)
 
 		return customError
 	}
