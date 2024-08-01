@@ -73,6 +73,7 @@ func (u User) scanRow(s sqlutil.RowScanner) (model.User, error) {
 		&m.ID,
 		&m.FirstName,
 		&m.Lastname,
+		&m.Email,
 		&m.Password,
 		&m.CreatedAt,
 		&updatedAtNull,

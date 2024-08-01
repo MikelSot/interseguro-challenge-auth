@@ -30,6 +30,7 @@ func buildHandler(spec model.RouterSpecification) handler {
 
 	return newHandler(useCase)
 }
+
 func publicRoutes(app *fiber.App, handler handler, middlewares ...fiber.Handler) {
 	api := app.Group(_publicRoutePrefix, middlewares...)
 

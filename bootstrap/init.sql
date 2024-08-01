@@ -1,11 +1,10 @@
-
 CREATE TABLE "users"
 (
     "id"         serial PRIMARY KEY,
-    "first_name" varchar(50)       NOT NULL,
-    "last_name"  varchar(50)       NOT NULL,
+    "first_name" varchar(50) NOT NULL,
+    "last_name"  varchar(50) NOT NULL,
     "email"      varchar(150) UNIQUE,
-    "password"    varchar(255),
+    "password"   varchar(255),
     "created_at" timestamp DEFAULT now(),
     "updated_at" timestamp
 );
