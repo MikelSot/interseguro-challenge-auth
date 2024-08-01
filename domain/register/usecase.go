@@ -31,6 +31,8 @@ func (r Register) Register(m model.User) (interface{}, error) {
 		return nil, customError
 	}
 
+	user.Password = ""
+
 	mr := struct {
 		model.User `json:"user"`
 		Token      string `json:"token"`

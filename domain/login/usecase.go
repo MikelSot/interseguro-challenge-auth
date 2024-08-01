@@ -44,6 +44,7 @@ func (l Login) Login(m model.User) (interface{}, error) {
 		return nil, customError
 	}
 	m.Password = ""
+	user.Password = ""
 
 	token, err := l.token.Generate(m)
 	if err != nil {
