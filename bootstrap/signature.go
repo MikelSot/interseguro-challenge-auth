@@ -51,6 +51,7 @@ func ValidateJWT(c *fiber.Ctx) error {
 
 		log.Errorf("Error al procesar el token: %s", err.Error())
 
+		log.Warn([]byte(getSignKey()))
 		log.Warnf(getSignKey())
 		log.Warnf(tokenHeader)
 
