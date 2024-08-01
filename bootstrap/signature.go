@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,7 +24,7 @@ func ValidateJWT(c *fiber.Ctx) error {
 		customError.SetAPIMessage(err.Error())
 		customError.SetStatusHTTP(http.StatusUnauthorized)
 
-		return customError
+		return fmt.Errorf("bootstrap: %w", customError)
 	}
 
 	verifyFunction := func(token *jwt.Token) (interface{}, error) {
@@ -46,7 +47,9 @@ func ValidateJWT(c *fiber.Ctx) error {
 		return customError
 	}
 	if err != nil {
-		log.Warn("Error al procesar el token")
+		log.Warnf("Error al procesar el token %v", err)
+
+		fmt.Println(getSignKey())
 
 		customError.SetCode(model.UnexpectedError)
 		customError.SetAPIMessage("Error al procesar el token")
