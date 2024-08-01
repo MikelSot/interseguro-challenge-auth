@@ -48,7 +48,6 @@ func ValidateJWT(c *fiber.Ctx) error {
 	}
 	if !token.Valid {
 		//log.Warn("Token de acceso no válido")
-
 		log.Errorf("Error al procesar el token: %s", err.Error())
 
 		log.Warn([]byte(getSignKey()))
