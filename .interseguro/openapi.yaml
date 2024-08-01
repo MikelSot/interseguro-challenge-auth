@@ -1,106 +1,400 @@
 openapi: 3.0.3
 info:
-  title: Interseguro Challenge
-  description: Auth API for Interseguro Challenge
+  title: Reto Financiera Compartamos
+  description: API CRUD de clientes y ciudades
   version: 1.0.0
   x-audience: internal
 servers:
   - url: https://reto-financiera-compartamos.onrender.com/api/v1
 paths:
-  /login:
+  /compartamos:
     post:
-      summary: Login
-      description: Login to the application
-      operationId: login
+      operationId: Create
+      tags:
+        - encora
+      summary: Creacion de clientes asociado.
+      description: Permite la creacion de clientes asociados a su ciudad respectiva
       requestBody:
+        description: body para crear un cliente.
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              "$ref": "#/components/schemas/CreateCustomer"
+      responses:
+        '201':
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message201"
+        '422':
+          description: UNPROCESSABLE_ENTITY
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntity'
+  /compartamos/{id}:
+    put:
+      operationId: update
+      tags:
+        - encora
+      summary: Actualizar informacion del cliente.
+      description: Permite la actualizacion de los datos del cliente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del cliente
+      requestBody:
+        description: body para editar un cliente.
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateCustomer"
+      responses:
+        200:
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message200"
+        422:
+          description: UNPROCESSABLE_ENTITY
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntity'
+  /compartamos/customers/{id}/cities/{city-id}:
+    delete:
+      operationId: Delete
+      tags:
+        - encora
+      summary: Elimina un cliente.
+      description: Elimina al cliente(actualiza la fecha de eliminacion) y borra la asociacion con la ciudad.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del cliente
+        - name: city-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la ciudad
+      responses:
+        '200':
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message200"
+  /compartamos/customers/{id}:
+    get:
+      operationId: GetByCustomerID
+      tags:
+        - encora
+      summary: Obtiene un cliente por ID.
+      description: Permite obtener la informacion del cliente en especifico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del cliente
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /register:
-    post:
-      summary: Register
-      description: Register to the application
-      operationId: register
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
+                "$ref": "#/components/schemas/MessageWithUrl"
+  /compartamos/customers:
+    get:
+      operationId: GetAllCustomers
+      tags:
+        - encora
+      summary: Optiene todos los clientes.
+      description: Permite obtener la informacion de todos los clientes que no tengan el campo deleted_at con valor
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                "$ref": "#/components/schemas/MessageAll"
 components:
-    schemas:
-        LoginRequest:
-        type: object
-        properties:
+  schemas:
+    Message:
+      type: object
+      properties:
+        data:
+          type: object
+          description: Información de la respuesta.
+          properties:
+            customer:
+              type: object
+              description: Información del cliente.
+              properties:
+                id:
+                  type: number
+                  example: 1'
+                first_name:
+                  type: string
+                  example: 'Miguel'
+                last_name:
+                  type: string
+                  example: 'Soto'
+                dni:
+                  type: string
+                  example: '12345678'
+                birth_date:
+                  type: string
+                  example: '2003-04-13T00:00:00Z'
+                  description: campo de de tipo fecha
+                gender:
+                  type: string
+                  example: 'M'
+                email:
+                  type: string
+                  example: 'miguel@soto.com'
+                is_staff:
+                  type: boolean
+                  example: false
+                picture:
+                  type: string
+                  example: 'https://www.google.com'
+                nickname:
+                  type: string
+                  example: 'miguelito'
+                created_at:
+                  type: string
+                  example: '2022-10-13T00:00:00Z'
+                  description: campo de de tipo date
+                updated_at:
+                  type: string
+                  example: '0001-01-01T00:00:00Z'
+                  description: campo de de tipo date
+                deleted_at:
+                  type: string
+                  example: '0001-01-01T00:00:00Z'
+                  description: campo de de tipo date
+            city:
+              type: object
+              properties:
+                id:
+                  type: number
+                  example: 1
+                name:
+                  type: string
+                  example: 'Lima'
+                created_at:
+                  type: string
+                  example: '0001-01-01T00:00:00Z'
+                  description: campo de de tipo date
+                updated_at:
+                  type: string
+                  example: '0001-01-01T00:00:00Z'
+                  description: campo de de tipo date
+                deleted_at:
+                  type: string
+                  example: '0001-01-01T00:00:00Z'
+                  description: campo de de tipo date
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "record_created"
+              message:
+                type: string
+                example: "¡listo!"
+    MessageWithUrl:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+    MessageAll:
+      type: object
+      properties:
+        data:
+          type: array
+          description: Información de la respuesta.
+          items:
+            - $ref: '#/components/schemas/ObjectCustomer'
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "record_created"
+              message:
+                type: string
+                example: "¡listo!"
+    Message200:
+      description: Mensaje de exito
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "record_created"
+              message:
+                type: string
+                example: "¡listo!"
+    Message201:
+      description: Mensaje de respuesta creacion de cliente
+      allOf:
+        - $ref: '#/components/schemas/Message'
+    CreateCustomer:
+      type: object
+      properties:
+        customer:
+          type: object
+          required:
+            - first_name
+            - last_name
+            - dni
+            - birth_date
+            - gender
+          properties:
+            first_name:
+              type: string
+              example: 'Miguel'
+              description: Nombre del cliente.
+            last_name:
+              type: string
+              example: 'Soto'
+              description: Apellido del cliente.
+            dni:
+              type: string
+              example: '12345678'
+              description: DNI del cliente.
+            birth_date:
+              type: string
+              example: '2003-04-13T00:00:00Z'
+              description: fecha de nacimiento del cliente, tipo date.
+            gender:
+              type: string
+              example: 'M'
+              description: Sexo.
             email:
-            type: string
-            password:
-            type: string
-        LoginResponse:
-        type: object
-        properties:
-            token:
-            type: string
-        RegisterRequest:
-        type: object
-        properties:
+              type: string
+              example: 'miguel@soto.com'
+              description: Correo.
+        city:
+          type: object
+          required:
+            - id
+            - name
+          properties:
+            id:
+              type: number
+              example: 12
+              description: ID de la ciudad a la que estara asociado el cliente.
+            name:
+              type: string
+              example: 'Lima'
+              description: Nombre de la ciudad.
+    UnprocessableEntity:
+      type: object
+      description: Object of response error
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "failure"
+                description: tipo de error o codigo
+              message:
+                type: string
+                example: "¡Upps! Error la ciudad no existe"
+                description: mensaje de error
+    ObjectCustomer:
+      type: object
+      description: Información de la respuesta.
+      properties:
+        customer:
+          type: object
+          description: Información del cliente.
+          properties:
+            id:
+              type: number
+              example: 1'
+            first_name:
+              type: string
+              example: 'Miguel'
+            last_name:
+              type: string
+              example: 'Soto'
+            dni:
+              type: string
+              example: '12345678'
+            birth_date:
+              type: string
+              example: '2003-04-13T00:00:00Z'
+              description: campo de de tipo date
+            gender:
+              type: string
+              example: 'M'
             email:
-            type: string
-            password:
-            type: string
-        RegisterResponse:
-        type: object
-        properties:
-            message:
-            type: string
-        Error:
-        type: object
-        properties:
-            message:
-            type: string
+              type: string
+              example: 'miguel@soto.com'
+            is_staff:
+              type: boolean
+              example: false
+            picture:
+              type: string
+              example: 'https://www.google.com'
+            nickname:
+              type: string
+              example: 'miguelito'
+            created_at:
+              type: string
+              example: '2022-10-13T00:00:00Z'
+              description: campo de de tipo date
+            updated_at:
+              type: string
+              example: '0001-01-01T00:00:00Z'
+              description: campo de de tipo date
+            deleted_at:
+              type: string
+              example: '0001-01-01T00:00:00Z'
+              description: campo de de tipo date
+        city:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            name:
+              type: string
+              example: 'Lima'
+            created_at:
+              type: string
+              example: '0001-01-01T00:00:00Z'
+              description: campo de de tipo date
+            updated_at:
+              type: string
+              example: '0001-01-01T00:00:00Z'
+              description: campo de de tipo date
+            deleted_at:
+              type: string
+              example: '0001-01-01T00:00:00Z'
+              description: campo de de tipo date
