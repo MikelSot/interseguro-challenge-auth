@@ -2,17 +2,28 @@ package bootstrap
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/MikelSot/interseguro-challenge-auth/infrastructure/handler/request"
+	"github.com/MikelSot/interseguro-challenge-auth/model"
 )
 
 func ValidateJWT(c *fiber.Ctx) error {
+	customError := model.NewError()
+
 	tokenHeader, err := request.GetTokenFromHeader(c)
 	if err != nil {
-		return fiber.NewError(fiber.StatusUnauthorized, "Se encontró un error al tratar de leer el token")
+		log.Warn("Se encontró un error al tratar de leer el token")
+
+		customError.SetCode(model.Unauthorized)
+		customError.SetAPIMessage(err.Error())
+		customError.SetStatusHTTP(http.StatusUnauthorized)
+
+		return customError
 	}
 
 	verifyFunction := func(token *jwt.Token) (interface{}, error) {
@@ -26,13 +37,31 @@ func ValidateJWT(c *fiber.Ctx) error {
 
 	token, err := jwt.Parse(tokenHeader, verifyFunction)
 	if errors.Is(err, jwt.ErrTokenExpired) {
-		return fiber.NewError(fiber.StatusUnauthorized, "Token de acceso expirado")
+		log.Warn("Token de acceso expirado")
+
+		customError.SetCode(model.TokenExpired)
+		customError.SetAPIMessage("Token de acceso expirado")
+		customError.SetStatusHTTP(http.StatusUnauthorized)
+
+		return customError
 	}
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Error al procesar el token")
+		log.Warn("Error al procesar el token")
+
+		customError.SetCode(model.UnexpectedError)
+		customError.SetAPIMessage("Error al procesar el token")
+		customError.SetStatusHTTP(http.StatusInternalServerError)
+
+		return customError
 	}
 	if !token.Valid {
-		return fiber.NewError(fiber.StatusUnauthorized, "Token de acceso no válido")
+		log.Warn("Token de acceso no válido")
+
+		customError.SetCode(model.Unauthorized)
+		customError.SetAPIMessage("Token de acceso no válido")
+		customError.SetStatusHTTP(http.StatusUnauthorized)
+
+		return customError
 	}
 
 	return c.Next()
