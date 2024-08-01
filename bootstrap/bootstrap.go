@@ -17,7 +17,7 @@ func Run() {
 	db := getConnectionDB()
 
 	handler.InitRoutes(model.RouterSpecification{
-		Api:       app,
+		App:       app,
 		Logger:    logger,
 		DB:        db,
 		ExpiresAt: getExpiresAtHours(),

@@ -11,13 +11,13 @@ import (
 )
 
 const (
-	_publicRoutePrefix = "/api/v1/login"
+	_publicRoutePrefix = "/auth/api/v1/login"
 )
 
 func NewRouter(spec model.RouterSpecification) {
 	handler := buildHandler(spec)
 
-	publicRoutes(spec.Api, handler)
+	publicRoutes(spec.App, handler)
 
 }
 

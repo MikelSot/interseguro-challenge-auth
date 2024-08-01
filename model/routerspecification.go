@@ -7,7 +7,7 @@ import (
 )
 
 type RouterSpecification struct {
-	Api       *fiber.App
+	App       *fiber.App
 	Logger    Logger
 	DB        *sql.DB
 	ExpiresAt int
